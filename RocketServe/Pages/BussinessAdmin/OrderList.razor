@@ -1,0 +1,42 @@
+﻿@page "/OrderList/{RestaurantId}"
+@inherits OrderListBase
+@using RocketServe.Data
+
+<AuthorizeView Roles="@RoleType.GetAdmins()" Context="mainContext">
+	<h3>Orders</h3>
+	@if (orders == null)
+	{
+	 <p>No Orders to display</p>
+	}
+	else
+	{
+
+	 <PagedList ListQuery="orders" ItemsPerPage="5">
+	  <HeaderDisplay>
+	   <tr>
+		<th>Date</th>
+		<th>Stage</th>
+		<th>Table</th>
+		<th>Total</th>
+		<th>Actions</th>
+	   </tr>
+	  </HeaderDisplay>
+	  <ItemDisplay>
+	   <tr>
+		<td>@context.Date</td>
+		<td>@context.Stage</td>
+		<td>@context.Table.Name</td>
+		<td>֏@context.TotalPrice</td>
+		<td>
+		 <button class="btn btn-primary"
+							@onclick="(()=>ViewOrderDetails(context))">
+		  View Details
+		 </button>
+		</td>
+	   </tr>
+	  </ItemDisplay>
+	 </PagedList>
+
+	 <Chart Config="pieConfig"></Chart>
+	}
+</AuthorizeView>

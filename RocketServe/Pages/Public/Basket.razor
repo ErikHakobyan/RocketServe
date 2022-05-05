@@ -1,0 +1,41 @@
+﻿@page "/Basket"
+@inherits BasketBase
+
+
+<h3>Your Orders</h3>
+@if (Order == null || Order.OrderDetails.Count == 0)
+{
+	<p>Please add products to your order</p>
+}
+else
+{
+	<table class="table">
+	 <thead>
+	  <tr>
+	   <th>Name</th>
+	   <th>Qty</th>
+	   <th>Total</th>
+	  </tr>
+	 </thead>
+	 <tbody>
+
+			@foreach (var orderDetail in Order.OrderDetails)
+			{
+		  <tr>
+		   <td>@orderDetail.Product.Name</td>
+		   <td>
+			<button class="btn btn-primary" @onclick="(()=>SubtractCount(orderDetail))">-</button>
+			<input @bind="orderDetail.Quantity" readonly="readonly" style="width:40px" />
+			<button class="btn btn-primary" @onclick="(()=>AddCount(orderDetail))">+</button>
+		   </td>
+		   <td>@orderDetail.TotalPrice</td>
+		  </tr>
+			}
+	 </tbody>
+	</table>
+	<h2>Total : @Order.TotalPrice Amd</h2>
+	<button class="btn btn-primary" @onclick="SaveOrder">Order</button>
+}
+
+
+

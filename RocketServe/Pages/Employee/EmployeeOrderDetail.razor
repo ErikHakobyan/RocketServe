@@ -1,0 +1,37 @@
+﻿@page "/EmployeeOrderDetail/{OrderId}"
+@inherits EmployeeOrderDetailBase
+@using RocketServe.Data
+
+<h3>Orders</h3>
+<AuthorizeView>
+
+	@if (order == null)
+	{
+	 <h3>no such orders</h3>
+	}
+	else
+	{
+
+	 <table class="table">
+	  <thead>
+	   <tr>
+		<th>Product</th>
+		<th>Quantity</th>
+		<th>Extra Instructions</th>
+	   </tr>
+	  </thead>
+	  <tbody>
+				@foreach (var orderDetail in order.OrderDetails)
+				{
+		   <tr>
+			<td>@orderDetail.Product.Name</td>
+			<td>@orderDetail.Quantity</td>
+			<td>@orderDetail.ExtraInstructions</td>
+		   </tr>
+				}
+	  </tbody>
+
+	 </table>
+	}
+
+</AuthorizeView>

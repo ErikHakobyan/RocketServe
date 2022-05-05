@@ -1,0 +1,187 @@
+﻿@page "/Bussiness/{RestaurantId}"
+@using RocketServe.Data
+@inherits BussinessBase
+
+
+<AuthorizeView Roles="@RoleType.Select(RoleType.GetAdmins(),RoleType.BussnessManager)">
+	@if (restaurant == null)
+	{
+	 <p>loading ...</p>
+	}
+	else
+	{
+	 <h1>@restaurant.Name</h1>
+	 <button class="btn btn-primary" style="margin:5px"
+			@onclick="AddCategory">
+	  Add Category
+	 </button>
+	 <button class="btn btn-primary" style="margin:5px"
+			@onclick="NavigateToTables">
+	  View Tables
+	 </button>
+		@if (restaurant.Categories.Count == 0)
+		{
+		 <p>There are no Categories.Please add</p>
+		}
+		else
+		{
+			@foreach (var category in restaurant.Categories)
+			{
+			 <table>
+			  <thead>
+			   <tr>
+				<th></th>
+				<th></th>
+				<th></th>
+			   </tr>
+			  </thead>
+			  <tbody>
+			   <tr>
+				<td><h3>@category.Products.Count @category.Name</h3></td>
+				<td>
+				 <button class="btn btn-danger" style="margin:5px"
+							@onclick="(()=>RemoveCategoryAsync(category))">
+				  Remove
+				 </button>
+				</td>
+				<td>
+				 <button class="btn btn-Primary" style="margin:5px"
+							@onclick="(()=>EditCategory(category))">
+				  Edit
+				 </button>
+				</td>
+			   </tr>
+			  </tbody>
+			 </table>
+
+
+			 <div class="row" style="margin:5px">
+					@foreach (var product in category.Products)
+					{
+				  <div class="card" style="width: 18rem;margin:5px">
+				   <img class="card-img-top" src="@product.ImageURL" alt="Card image cap">
+				   <div class="card-body">
+					<h5 class="card-title">@product.Name</h5>
+					<p class="card-text">@product.Description</p>
+					<button class="btn btn-primary" style="margin:5px"
+						@onclick="(()=>EditProduct(category,product))">
+					 Edit
+					</button>
+					<button class="btn btn-danger" style="margin:5px"
+						@onclick="(()=>RemoveProduct(category,product))">
+					 Delete
+					</button>
+					<h3>@product.Price դրամ</h3>
+				   </div>
+				  </div>
+					}
+			  <div class="card text-center" style="width: 18rem;">
+			   <div class="card-body">
+				<h5 class="card-title">Add new Product</h5>
+				<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+				<button href="#" class="btn btn-primary"
+						@onclick="(()=>AddProduct(category))">
+				 Add
+				</button>
+			   </div>
+			  </div>
+			 </div>
+			}
+		}
+
+		if (showCategoryPopup)
+		{
+		 <div class="modal" tabindex="-1" style="display:block" role="dialog">
+		  <div class="modal-dialog">
+		   <div class="modal-content">
+			<div class="modal-header">
+			 <h3 class="modal-title">Add\Edit Category</h3>
+			 <!-- Button to close the popup -->
+					<button type="button" class="close"
+							@onclick="CloseCategoryPopup">
+			  <span aria-hidden="true">X</span>
+			 </button>
+			</div>
+			<!-- Edit or add form for the selected category -->
+				<div class="modal-body">
+
+			 <div class="form-group">
+			  <input class="form-control"
+							   placeholder="Name"
+							   @bind="objCategory.Name" />
+			 </div>
+			 <button class="btn btn-primary"
+							@onclick="SaveCategoryAsync">
+			  Save
+			 </button>
+			</div>
+		   </div>
+		  </div>
+		 </div>
+		}
+		if (showProductPopup)
+		{
+		 <div class="modal" tabindex="-1" style="display:block" role="dialog">
+		  <div class="modal-dialog">
+		   <div class="modal-content">
+			<div class="modal-header">
+			 <h3 class="modal-title">Add\Edit Product</h3>
+			 <!-- Button to close the popup -->
+					<button type="button" class="close"
+							@onclick="CloseProductPopup">
+			  <span aria-hidden="true">X</span>
+			 </button>
+			</div>
+			<!-- Edit or add form for the selected category -->
+				<div class="modal-body">
+			 @*<div class="form-group">
+			  <img class="card-img-top" src="@objProduct.ImageURL" alt="Card image cap"
+							 width="200" height="200">
+			  <InputFile OnChange="OnInputFileChange" />
+			 </div>*@
+			 <div class="row">
+			  <div class="col md-4">
+			   <div class="form-group">
+				<label>Category</label>
+				<input class="form-control"
+									   placeholder="Name"
+									   readonly="readonly"
+									   @bind="objCategory.Name" />
+			   </div>
+			   <div class="form-group">
+				<label>Product Name *</label>
+				<input class="form-control"
+									   placeholder="Name"
+									   @bind="objProduct.Name" />
+			   </div>
+			    <div class="form-group">
+				<label>Product Image URL *</label>
+				<input class="form-control"
+									   placeholder="Name"
+									   @bind="objProduct.ImageURL" />
+			   </div>
+			   <div class="form-group">
+				<label>Product Description</label>
+				<input class="form-control"
+									   placeholder="Name"
+									   @bind="objProduct.Description" />
+			   </div>
+			   <div class="form-group">
+				<label>Product Price *</label>
+				<input class="form-control"
+									   placeholder="Price"
+									   @bind="objProduct.Price" />
+			   </div>
+			  </div>
+			 </div>
+			 <button class="btn btn-primary"
+							@onclick="SaveProductAsync">
+			  Save
+			 </button>
+			</div>
+		   </div>
+		  </div>
+		 </div>
+		}
+	}
+</AuthorizeView>

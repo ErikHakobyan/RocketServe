@@ -1,0 +1,33 @@
+﻿@page "/OrderDetails/{OrderId}"
+@inherits OrderDetailsBase
+@using RocketServe.Data
+
+<AuthorizeView Roles="@RoleType.GetAdmins()" Context="mainContext">
+	<h3>Order Details</h3>
+	@if (orderDetails == null)
+	{
+	 <p>Loading ...</p>
+	}
+	else
+	{
+
+	 <PagedList ListQuery="orderDetails" ItemsPerPage="5">
+	  <HeaderDisplay>
+	   <tr>
+		<th>Product Name</th>
+		<th>Quantity</th>
+		<th>Unit Price</th>
+		<th>Total</th>
+	   </tr>
+	  </HeaderDisplay>
+	  <ItemDisplay>
+	   <tr>
+			<td>@context.Product.Name</td>
+			<td>@context.Quantity</td>
+			<td>֏@context.UnitPrice</td>
+			<td>֏@context.TotalPrice</td>
+		   </tr>
+	  </ItemDisplay>
+	 </PagedList>
+	}
+</AuthorizeView>

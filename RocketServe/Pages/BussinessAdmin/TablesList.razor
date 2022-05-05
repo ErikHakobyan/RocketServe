@@ -1,0 +1,99 @@
+﻿@page "/Tables/{RestaurantId}"
+@using RocketServe.Data
+
+@inherits TablesListBase
+
+<AuthorizeView Roles="@RoleType.Select(RoleType.GetAdmins(),RoleType.BussnessManager)">
+	<h3>Tables List</h3>
+	@if (restaurant == null)
+	{
+	 <h3>Loading ...</h3>
+	}
+	else
+	{
+
+
+	 <button class="btn btn-primary" style="margin:5px"
+			@onclick="AddTableAsync">
+	  Add
+	 </button>
+	 <button class="btn btn-danger" style="margin:5px"
+			@onclick="RemoveLastTableAsync">
+	  Remove
+	 </button>
+		@if (restaurant.Tables == null || restaurant.Tables.Count == 0)
+		{
+		 <h3>PLease add some tables</h3>
+		}
+		else
+		{
+		 <table>
+		  <thead>
+		   <tr>
+			<th>Working</th>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Actions</th>
+			<th></th>
+			<th></th>
+		   </tr>
+		  </thead>
+		  <tbody>
+					@foreach (var table in restaurant.Tables)
+					{
+			   <tr>
+				<td>@table.IsWorking</td>
+				<td>@table.Id</td>
+				<td>@table.Name</td>
+				<td>
+				 <button class="btn btn-primary"
+							style="margin:5px" disabled="@table.IsWorking"
+							@onclick="(()=>MarkTableAsWorking(table))">
+				  Mark as working
+				 </button>
+				</td>
+				<td>
+				 <button class="btn btn-danger"
+							style="margin:5px" disabled="@(!table.IsWorking)"
+							@onclick="(()=>MarkTableAsUnWorking(table))">
+				  Mark as UnWorking
+				 </button>
+				</td>
+				<td>
+				 <button class="btn btn-primary"
+							style="margin:5px" disabled="@(!table.IsWorking)"
+							@onclick="(()=>GetTableQR(table))">
+				  Get Table QR code
+				 </button>
+				</td>
+			   </tr>
+					}
+		  </tbody>
+		 </table>
+		}
+
+		if (showQrPopup == true)
+		{
+		 <div class="modal" tabindex="-1" style="display:block" role="dialog">
+		  <div class="modal-dialog">
+		   <div class="modal-content">
+			<div class="modal-header">
+			 <h3 class="modal-title">QR Code</h3>
+			 <!-- Button to close the popup -->
+					<button type="button" class="close"
+							@onclick="CloseQrPopup">
+			  <span aria-hidden="true">X</span>
+			 </button>
+			</div>
+			<!-- Edit or add form for the selected category -->
+				<div class="modal-body">
+			 <img src="@qrUri" class="img-thumbnail" />
+			</div>
+		   </div>
+		  </div>
+		 </div>
+		}
+	}
+</AuthorizeView>
+
+

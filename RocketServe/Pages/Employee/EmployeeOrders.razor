@@ -1,0 +1,91 @@
+﻿@page "/EmployeeOrders"
+@inherits EmployeeOrdersBase
+@using RocketServe.Data
+
+<h3>Orders</h3>
+<AuthorizeView Roles="@RoleType.SelectAll()">
+
+	@if (orders == null)
+	{
+	 <h3>no Orders</h3>
+	}
+	else
+	{
+	 <table class="table">
+	  <thead>
+	   <tr>
+		<th>Date</th>
+		<th>Table</th>
+		<th>Status</th>
+		<th>Actions</th>
+	   </tr>
+	  </thead>
+	  <tbody>
+				@foreach (var order in newOrders)
+				{
+		   <tr>
+			<td>@order.Date.ToShortTimeString()</td>
+			<td>@order.Table.Name</td>
+			<td>
+			 <select class="form-control"
+							@bind="@order.Stage">
+								@foreach (var stage in stages)
+								{
+				  <option value="@stage">
+										@stage
+				  </option>
+								}
+			 </select>
+			</td>
+			<td><button class="btn btn-primary"
+		           @onclick="(()=>ViewOrderDetails(order))">View Order</button></td>
+		   </tr>
+				}
+				<hr/>
+				@foreach (var order in preparingOrders)
+				{
+		   <tr>
+			<td>@order.Date.ToShortTimeString()</td>
+			<td>@order.Table.Name</td>
+			<td>
+			 <select class="form-control"
+							@bind="@order.Stage">
+								@foreach (var stage in stages)
+								{
+				  <option value="@stage">
+										@stage
+				  </option>
+								}
+			 </select>
+			</td>
+			<td><button class="btn btn-primary"
+		           @onclick="(()=>ViewOrderDetails(order))">View Order</button></td>
+		   </tr>
+				}
+				<hr/>
+				@foreach (var order in servedOrders)
+				{
+		   <tr>
+			<td>@order.Date.ToShortTimeString()</td>
+			<td>@order.Table.Name</td>
+			<td>
+			 <select class="form-control"
+							@bind="@order.Stage">
+								@foreach (var stage in stages)
+								{
+				  <option value="@stage">
+										@stage
+				  </option>
+								}
+			 </select>
+			</td>
+			<td><button class="btn btn-primary"
+		           @onclick="(()=>ViewOrderDetails(order))">View Order</button></td>
+		   </tr>
+				}
+	  </tbody>
+
+	 </table>
+	}
+
+</AuthorizeView>

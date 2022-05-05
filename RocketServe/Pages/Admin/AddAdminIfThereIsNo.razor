@@ -1,0 +1,58 @@
+﻿@page "/addAdminIfThereIsNo/{pin}"
+@using RocketServe.Data
+@using RocketServe.Services;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<User> userManager
+@inject RoleManager<IdentityRole> roleManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserService userService
+@inject NavigationManager navigationManager
+
+@if (results == null)
+{
+	<h3>Loading...</h3>
+}
+else
+{
+	@foreach (var item in results)
+	{
+		<br>
+		<h3>@item.Errors.FirstOrDefault()</h3>
+		<br>
+		<h3>@item.Succeeded</h3>
+		<br>
+	}
+}
+@code {
+
+	[Parameter]
+	public string Pin { get; set; }
+	private List<IdentityResult> results = new List<IdentityResult>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (Pin == @"am54")
+		{
+			foreach (var item in RoleType.GetRoles())
+			{
+				if (!(await roleManager.RoleExistsAsync(item)))
+					results.Add(await roleManager.CreateAsync(new IdentityRole(item)));
+			}
+			// Ensure a user with email erik.hakobyan.2014@gmail.com is an Administrator
+			var user = await userManager.FindByEmailAsync("admin@gmail.com");
+			if (user == null)
+			{
+				await userService.SaveUserAsync(new User
+				{
+					Id = string.Empty,
+					UserName = "admin@gmail.com",
+					Email = "admin@gmail.com",
+					PasswordHash = "Admin!123"
+				}, RoleType.Admin);
+			}
+
+		}
+		else
+			navigationManager.NavigateTo("404");
+	}
+}
